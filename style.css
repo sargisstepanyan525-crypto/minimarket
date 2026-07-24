@@ -286,6 +286,160 @@ header {
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
 }
+/* AI Chat Widget CSS */
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 3000;
+}
+
+.chat-toggle-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.chat-badge-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: #22c55e;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.chat-window {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    bottom: 75px;
+    right: 0;
+    width: 330px;
+    height: 430px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.chat-header {
+    background: var(--primary);
+    color: white;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-close {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f8fafc;
+}
+
+.msg {
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.bot-msg {
+    background: white;
+    border: 1px solid var(--border);
+    align-self: flex-start;
+}
+
+.user-msg {
+    background: var(--accent);
+    color: white;
+    align-self: flex-end;
+}
+
+.chat-quick-replies {
+    padding: 6px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    background: #fff;
+    border-top: 1px solid var(--border);
+}
+
+.chat-quick-replies button {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.operator-btn {
+    background: #25D366 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 8px;
+    border-top: 1px solid var(--border);
+    background: white;
+}
+
+.chat-input-area input {
+    flex: 1;
+    border: 1px solid var(--border);
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+}
+
+.chat-input-area button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0 12px;
+    margin-left: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-whatsapp-link {
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 5px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 11px;
+}
 
 .delivery-info {
     background: #f0fdf4;
