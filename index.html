@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINI MARKET - ახალციხე</title>
+    <!-- FontAwesome იკონებისთვის -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --bg: #f4f6f7;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #333;
+            padding-bottom: 50px;
+        }
+
+        /* Header & Banner */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        .header-info {
+            font-size: 14px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-info a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        /* Top Bar Info */
+        .info-bar {
+            background: #e9ecef;
+            padding: 10px 5%;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Controls: Search & Filter */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .controls input, .controls select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .controls input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Admin Trigger Button */
+        .btn-admin {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .card-country {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .badge-prize {
+            background: #e74c3c;
+            color: white;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .card-price {
+            font-size: 18px;
+            color: var(--success);
+            font-weight: bold;
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .admin-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-delete {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* Modal / Cart / Admin Panels */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        /* Delivery notice box */
+        .delivery-box {
+            background: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1><i class="fa-solid fa-store"></i> MINI MARKET</h1>
+        </div>
+        <div class="header-info">
+            <span><i class="fa-solid fa-phone"></i> <a href="tel:+995500224822">+995 500 22 48 22</a></span>
+            <div class="cart-icon" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </div>
+            <button class="btn-admin" onclick="openAdminModal()"><i class="fa-solid fa-user-lock"></i> ადმინი</button>
+        </div>
+    </header>
+
+    <!-- Info Bar -->
+    <div class="info-bar">
+        <div><i class="fa-solid fa-location-dot"></i> ქ. ახალციხე, იაძის ქ. N2</div>
+        <div><i class="fa-solid fa-clock"></i> სამუშაო საათები: 10:00 - 17:50</div>
+        <div><i class="fa-solid fa-truck"></i> უფასო მიწოდება 200₾-ზე ზემოთ!</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Controls -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="მოძებნე პროდუქტი..." oninput="renderProducts()">
+            <select id="countryFilter" onchange="renderProducts()">
+                <option value="ALL">ყველა ქვეყანა</option>
+                <option value="საქართველო">საქართველო</option>
+                <option value="სომხეთი">სომხეთი</option>
+                <option value="თურქეთი">თურქეთი</option>
+                <option value="უკრაინა">უკრაინა</option>
+                <option value="ჩინეთი">ჩინეთი</option>
+                <option value="რუსეთი">რუსეთი</option>
+                <option value="სხვა">სხვა</option>
+            </select>
+        </div>
+
+        <!-- Products -->
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="toggleCart()">&times;</span>
+            <h2><i class="fa-solid fa-basket-shopping"></i> კალათა</h2>
+            <br>
+            <div id="cartItems"></div>
+            <hr><br>
+            <h3>ჯამი: <span id="cartTotal">0</span> ₾</h3>
+
+            <div class="delivery-box">
+                <b>მიწოდების ტარიფები:</b><br>
+                • ახალციხე: 3-6 ₾<br>
+                • სოფლები: 10-20 ₾<br>
+                • 200 ₾-ზე მეტზე: <b>უფასო</b>
+            </div>
+
+            <br>
+            <div class="form-group">
+                <label>მისამართი / სოფელი:</label>
+                <input type="text" id="orderAddress" placeholder="მაგ: იაძის ქუჩა ან სოფ. ვალე">
+            </div>
+            <div class="form-group">
+                <label>გადახდის მეთოდი:</label>
+                <select id="paymentMethod">
+                    <option value="card">💳 საბანკო ბარათით</option>
+                    <option value="cash">💵 ნაღდი ანგარიშსწორება</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="checkout()">შეკვეთის გაფორმება</button>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('adminLoginModal')">&times;</span>
+            <h2>ადმინისტრირება</h2>
+            <br>
+            <div class="form-group">
+                <label>შეიყვანეთ პაროლი:</label>
+                <input type="password" id="adminPassword" placeholder="****">
+            </div>
+            <button class="btn-add" onclick="loginAdmin()">შესვლა</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div class="modal" id="adminPanelModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('adminPanelModal')">&times;</span>
+            <h2>პროდუქტის დამატება</h2>
+            <br>
+            <div class="form-group">
+                <label>დასახელება:</label>
+                <input type="text" id="prodName">
+            </div>
+            <div class="form-group">
+                <label>ფასი (₾):</label>
+                <input type="number" id="prodPrice" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>ფოტოს URL ბმული:</label>
+                <input type="text" id="prodImg" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="form-group">
+                <label>ქვეყანა:</label>
+                <select id="prodCountry">
+                    <option value="საქართველო">საქართველო</option>
+                    <option value="სომხეთი">სომხეთი</option>
+                    <option value="თურქეთი">თურქეთი</option>
+                    <option value="უკრაინა">უკრაინა</option>
+                    <option value="ჩინეთი">ჩინეთი</option>
+                    <option value="რუსეთი">რუსეთი</option>
+                    <option value="სხვა">სხვა</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="prodHasPrize"> 🎁 ამოდის პრიზი (აქცია)
+                </label>
+            </div>
+            <button class="btn-add" onclick="addProduct()">დამატება</button>
+        </div>
+    </div>
+
+    <script>
+        // Default Initial Products
+        const initialProducts = [
+            { id: 1, name: "სომხური ყავა ლატინო", price: 3.50, country: "სომხეთი", img: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400", hasPrize: true },
+            { id: 2, name: "სარეცხი საშუალება Ariel", price: 18.00, country: "თურქეთი", img: "https://images.unsplash.com/photo-1585830812416-a6c86bb14576?w=400", hasPrize: false }
+        ];
+
+        // Load Products from LocalStorage or Set Defaults
+        let products = JSON.parse(localStorage.getItem('mini_market_products')) || initialProducts;
+        let cart = [];
+        let isAdmin = false;
+
+        function saveProducts() {
+            localStorage.setItem('mini_market_products', JSON.stringify(products));
+        }
+
+        // Render Products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const country = document.getElementById('countryFilter').value;
+
+            grid.innerHTML = '';
+
+            const filtered = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(search);
+                const matchesCountry = (country === 'ALL') || (p.country === country);
+                return matchesSearch && matchesCountry;
+            });
+
+            filtered.forEach(p => {
+                grid.innerHTML += `
+                    <div class="card">
+                        ${p.hasPrize ? '<span class="badge-prize"><i class="fa-solid fa-gift"></i> პრიზი!</span>' : ''}
+                        <img src="${p.img || 'https://via.placeholder.com/200'}" alt="${p.name}">
+                        <div class="card-body">
+                            <div class="card-title">${p.name}</div>
+                            <div class="card-country"><i class="fa-solid fa-earth-americas"></i> ${p.country}</div>
+                            <div class="card-price">${p.price.toFixed(2)} ₾</div>
+                            <button class="btn-add" onclick="addToCart(${p.id})"><i class="fa-solid fa-plus"></i> კალათაში</button>
+                            ${isAdmin ? `
+                                <div class="admin-actions">
+                                    <button class="btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i> წაშლა</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Cart Functions
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            cart.push(item);
+            updateCart();
+        }
+
+        function updateCart() {
+            document.getElementById('cartCount').innerText = cart.length;
+            const cartItems = document.getElementById('cartItems');
+            let total = 0;
+            cartItems.innerHTML = '';
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <b>${item.name}</b><br>
+                            <small>${item.price.toFixed(2)} ₾</small>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cartTotal').innerText = total.toFixed(2);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('კალათა ცარიელია!');
+                return;
+            }
+            const address = document.getElementById('orderAddress').value;
+            if (!address) {
+                alert('გთხოვთ მიუთითოთ მისამართი!');
+                return;
+            }
+            alert('შეკვეთა მიღებულია! დაკავშირება მოხდება ნომერზე: +995 500 22 48 22');
+            cart = [];
+            updateCart();
+            toggleCart();
+        }
+
+        // Admin System
+        function openAdminModal() {
+            if (isAdmin) {
+                document.getElementById('adminPanelModal').style.display = 'flex';
+            } else {
+                document.getElementById('adminLoginModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function loginAdmin() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === '2003') {
+                isAdmin = true;
+                closeModal('adminLoginModal');
+                document.getElementById('adminPanelModal').style.display = 'flex';
+                renderProducts();
+            } else {
+                alert('არასწორი პაროლი!');
+            }
+        }
+
+        function addProduct() {
+            const name = document.getElementById('prodName').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const img = document.getElementById('prodImg').value;
+            const country = document.getElementById('prodCountry').value;
+            const hasPrize = document.getElementById('prodHasPrize').checked;
+
+            if (!name || isNaN(price)) {
+                alert('გთხოვთ შეავსოთ დასახელება და ფასი!');
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(),
+                name,
+                price,
+                img,
+                country,
+                hasPrize
+            };
+
+            products.push(newProduct);
+            saveProducts();
+            renderProducts();
+            closeModal('adminPanelModal');
+
+            // Reset Form
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodPrice').value = '';
+            document.getElementById('prodImg').value = '';
+        }
+
+        function deleteProduct(id) {
+            if (confirm('ნამდვილად გსურთ პროდუქტის წაშლა?')) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                renderProducts();
+            }
+        }
+
+        // Initial Load
+        renderProducts();
+    </script>
+</body>
+</html>
